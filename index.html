@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#fff4f8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Kids Choice — Expense Tracker</title>
+<link rel="manifest" href="manifest.webmanifest">
+<style>
+:root{--bg:#fff7fa;--bg2:#fff0f6;--card:#ffffff;--card2:#f7f2ff;--line:#f0e3ed;--txt:#28243b;--muted:#817b91;--accent:#f47ca8;--green:#229c79;--red:#e85d75;--amber:#f0ad3d;--radius:20px}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:linear-gradient(180deg,#fff4f8 0%,#f8f5ff 48%,#f4fbf8 100%);color:var(--txt);font:15px system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,input,select,textarea{font:inherit}button{cursor:pointer}
+.app{max-width:520px;min-height:100dvh;margin:auto;padding-bottom:92px}
+header{padding:calc(18px + env(safe-area-inset-top)) 18px 14px;display:flex;justify-content:space-between;align-items:center}
+h1{font-size:25px;margin:0;letter-spacing:-.6px}h2{font-size:21px;margin:0 0 16px}h3{font-size:12px;letter-spacing:.7px;text-transform:uppercase;color:var(--muted);margin:0 0 12px}
+.sub,.muted{font-size:12px;color:var(--muted);margin-top:3px}
+.iconbtn{border:1px solid var(--line);background:var(--card);color:var(--txt);border-radius:13px;width:42px;height:42px}
+main{padding:0 14px}.screen{display:none}.screen.active{display:block}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-bottom:13px}
+.hero{background:linear-gradient(135deg,#f8a4c3 0%,#c9b8ff 55%,#b9eee0 100%);color:#28243b;border:0;box-shadow:0 10px 26px #d6a5c52b}
+.hero .muted,.hero h3{color:#51445f}.big{font-size:35px;font-weight:750;letter-spacing:-1px;margin:4px 0 14px}
+.metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px}.metric{background:rgba(255,255,255,.55);border:1px solid #ffffff75;border-radius:14px;padding:10px}.metric span{font-size:11px;display:block;opacity:.85}.metric strong{font-size:17px;display:block;margin-top:3px;overflow-wrap:anywhere}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.stat{padding:13px;background:#ffffffd9;border:1px solid var(--line);border-radius:16px;box-shadow:0 5px 18px #39234c08}.stat .label{font-size:12px;color:var(--muted)}.stat strong{font-size:20px;display:block;margin-top:5px;overflow-wrap:anywhere}
+.row{display:flex;align-items:center;gap:11px;padding:12px 0;border-bottom:1px solid var(--line)}.row:last-child{border-bottom:0}.emoji{width:40px;height:40px;border-radius:14px;display:grid;place-items:center;background:#f7e8f0;font-size:19px;flex-shrink:0}.rowmain{flex:1;min-width:0}.rowtitle{font-weight:650;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.rowmeta{font-size:11px;color:var(--muted);margin-top:3px}.amount{font-weight:750;white-space:nowrap}.positive{color:var(--green)}.negative{color:var(--red)}.empty{text-align:center;padding:25px 8px;color:var(--muted);font-size:13px}
+.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:520px;display:flex;justify-content:space-around;padding:8px 5px calc(8px + env(safe-area-inset-bottom));background:rgba(255,255,255,.94);border-top:1px solid var(--line);backdrop-filter:blur(16px);box-shadow:0 -5px 20px #39234c08;z-index:5}
+.nav button{border:0;background:none;color:var(--muted);font-size:10px;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:62px;padding:4px}.nav button b{font-size:20px;font-weight:500}.nav button.active{color:#d94c87}
+.fab{position:fixed;bottom:78px;right:max(18px,calc((100vw - 520px)/2 + 18px));z-index:4;border:0;width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg,#f47ca8,#c9b8ff);color:#34243e;font-size:31px;box-shadow:0 7px 22px #d58bad55}
+.btn{border:0;border-radius:13px;padding:13px 15px;background:linear-gradient(135deg,#f47ca8,#d7a8f5);color:#34243e;font-weight:750;width:100%;box-shadow:0 5px 14px #d58bad2b}.btn.secondary{background:#f1ecff;color:#49405d;border:1px solid #e5dcfa;box-shadow:none}.btn.danger{background:#ffe6eb;color:#a72f4c;box-shadow:none}
+.field{margin-bottom:13px}.field label{display:block;color:var(--muted);font-size:12px;margin-bottom:6px}.field input,.field select,.field textarea,.search{width:100%;padding:12px;border-radius:11px;border:1px solid var(--line);background:#fff;color:var(--txt);outline:none}.field textarea{min-height:65px;resize:vertical}
+.segment{display:flex;padding:4px;border-radius:12px;background:var(--card2);margin-bottom:15px}.segment button{flex:1;padding:10px;border:0;border-radius:9px;background:none;color:var(--muted);font-weight:700}.segment button.active{background:#f5a0bf;color:#4b2540}
+.sheet{display:none;position:fixed;inset:0;background:#0009;z-index:10;align-items:flex-end}.sheet.open{display:flex}.panel{width:100%;max-width:520px;max-height:94dvh;overflow:auto;margin:auto auto 0;background:var(--bg);border:1px solid var(--line);border-radius:24px 24px 0 0;padding:20px 16px calc(22px + env(safe-area-inset-bottom))}.sheethead{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.close{border:0;border-radius:50%;background:var(--card2);color:var(--txt);width:34px;height:34px}
+.filters{display:grid;grid-template-columns:1fr 1fr;gap:10px}.pill{font-size:10px;padding:3px 7px;border-radius:20px;background:var(--card2);color:var(--muted)}
+.notice{font-size:12px;line-height:1.5;color:var(--muted);padding:10px 0}.tools{display:grid;gap:10px}.hidden{display:none!important}
+</style>
+</head>
+<body>
+<div class="app">
+<header><div><h1>Kids Choice</h1><div class="sub" id="monthLabel">Shop Expense Tracker</div></div><button class="iconbtn" aria-label="Settings and backup" onclick="showScreen('settings')">⚙</button></header>
+<main>
+<section id="home" class="screen active">
+ <div class="card hero"><h3>Net cash flow · this month</h3><div class="big" id="netFlow">₹0</div>
+  <div class="metrics"><div class="metric"><span>Money in</span><strong id="totalIn">₹0</strong></div><div class="metric"><span>Money out</span><strong id="totalOut">₹0</strong></div></div>
+ </div>
+ <div class="grid" style="margin-bottom:13px">
+  <div class="stat"><div class="label">Cash balance*</div><strong id="cashBal">₹0</strong></div>
+  <div class="stat"><div class="label">UPI balance*</div><strong id="upiBal">₹0</strong></div>
+  <div class="stat"><div class="label">Sales this month</div><strong id="salesTotal">₹0</strong></div>
+  <div class="stat"><div class="label">Inventory purchases</div><strong id="inventoryTotal">₹0</strong></div>
+ </div>
+ <div class="card"><h3>Payment split · this month</h3><div class="row"><div class="emoji">💵</div><div class="rowmain"><div class="rowtitle">Cash received from sales</div></div><strong class="amount" id="cashSales">₹0</strong></div><div class="row"><div class="emoji">📲</div><div class="rowmain"><div class="rowtitle">UPI received from sales</div></div><strong class="amount" id="upiSales">₹0</strong></div></div>
+ <div class="card"><h3>Recent transactions <button style="float:right;background:none;border:0;color:var(--accent)" onclick="showScreen('transactions')">See all →</button></h3><div id="recentList"></div></div>
+ <p class="notice">*Cash and UPI balances are calculated from all recorded transactions since you started using the tracker. Enter an opening balance as an “Other income” or opening-balance entry if you want to include money already in the shop.</p>
+</section>
+<section id="transactions" class="screen">
+ <h2>Transactions</h2><input class="search" id="search" placeholder="Search description or category…" oninput="renderTransactions()" style="margin-bottom:10px">
+ <div class="filters" style="margin-bottom:10px">
+  <div class="field"><label>Type</label><select id="filterType" onchange="renderTransactions()"><option value="">All types</option><option value="in">Money in</option><option value="out">Money out</option></select></div>
+  <div class="field"><label>Payment</label><select id="filterPay" onchange="renderTransactions()"><option value="">All methods</option><option>Cash</option><option>UPI</option><option>Bank transfer</option><option>Other</option></select></div>
+  <div class="field"><label>From date</label><input type="date" id="filterFrom" onchange="renderTransactions()"></div>
+  <div class="field"><label>To date</label><input type="date" id="filterTo" onchange="renderTransactions()"></div>
+ </div>
+ <div class="card"><div class="muted" id="resultCount"></div><div id="transactionList"></div></div>
+</section>
+<section id="reports" class="screen">
+ <h2>Reports</h2><div class="field"><label>Reporting month</label><input type="month" id="reportMonth" onchange="renderReports()"></div>
+ <div class="grid"><div class="stat"><div class="label">Money in</div><strong class="positive" id="rIn">₹0</strong></div><div class="stat"><div class="label">Money out</div><strong class="negative" id="rOut">₹0</strong></div><div class="stat"><div class="label">Net cash flow</div><strong id="rNet">₹0</strong></div><div class="stat"><div class="label">Sales</div><strong id="rSales">₹0</strong></div></div>
+ <div class="card" style="margin-top:13px"><h3>Money out by category</h3><div id="categoryReport"></div></div>
+ <div class="card"><h3>Monthly totals by payment method</h3><div id="paymentReport"></div></div>
+</section>
+<section id="settings" class="screen">
+ <h2>Settings &amp; backup</h2><div class="card"><h3>Data backup</h3><div class="tools">
+ <button class="btn" onclick="exportJSON()">Export full backup (JSON)</button><button class="btn secondary" onclick="exportCSV()">Export transactions (CSV)</button>
+ <label class="btn secondary" style="text-align:center">Restore backup (JSON)<input type="file" accept=".json,application/json" id="importFile" onchange="importJSON(event)" style="display:none"></label>
+ </div><p class="notice">Your records stay in this browser on this device. To move to another device, export a JSON backup here and restore that file on the other device. Restore replaces the current records, after confirmation.</p></div>
+ <div class="card"><h3>Included categories</h3><div class="muted">Money in: Sales, Other income, Refund received.</div><div class="muted" style="margin-top:8px">Money out: Inventory purchase, Rent, Electricity, Store expenses, Transport, Packaging, Marketing, Other expense.</div></div>
+ <div class="card"><h3>Local data</h3><button class="btn danger" onclick="clearAll()">Erase all transactions</button><p class="notice">This cannot be undone unless you have a backup.</p></div>
+ <p class="notice">Privacy: this starter app does not send your transaction records to a server. Browser/device storage can be lost if browser data is cleared, so export backups regularly.</p>
+</section>
+</main>
+<button class="fab" onclick="openEntry()" aria-label="Add transaction">+</button>
+<nav class="nav"><button class="active" data-screen="home" onclick="showScreen('home')"><b>⌂</b>Home</button><button data-screen="transactions" onclick="showScreen('transactions')"><b>≡</b>Transactions</button><button data-screen="reports" onclick="showScreen('reports')"><b>▥</b>Reports</button><button data-screen="settings" onclick="showScreen('settings')"><b>⚙</b>Backup</button></nav>
+</div>
+<div class="sheet" id="entrySheet" role="dialog" aria-modal="true">
+ <div class="panel"><div class="sheethead"><h2 id="formTitle">Add transaction</h2><button class="close" onclick="closeEntry()">✕</button></div>
+ <div class="segment"><button id="inTab" class="active" onclick="setType('in')">＋ Money in</button><button id="outTab" onclick="setType('out')">− Money out</button></div>
+ <form id="entryForm" onsubmit="saveEntry(event)">
+  <div class="field"><label>Amount (₹) *</label><input id="amount" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="0.00" required></div>
+  <div class="field"><label>Category *</label><select id="category" required></select></div>
+  <div class="field"><label>Payment method *</label><select id="payment" required><option>Cash</option><option>UPI</option><option>Bank transfer</option><option>Other</option></select></div>
+  <div class="field"><label>Date *</label><input id="date" type="date" required></div>
+  <div class="field"><label>Description / supplier (optional)</label><input id="description" maxlength="160" placeholder="e.g. New stock from Tiruppur"></div>
+  <div class="field"><label>Notes (optional)</label><textarea id="notes" maxlength="500" placeholder="Any extra details"></textarea></div>
+  <button class="btn" type="submit" id="saveButton">Save transaction</button>
+  <button class="btn danger hidden" type="button" id="deleteButton" style="margin-top:9px" onclick="deleteEntry()">Delete transaction</button>
+ </form></div>
+</div>
+<div class="sheet" id="toastSheet"><div class="panel" style="padding-bottom:22px"><div id="toastText"></div><button class="btn secondary" style="margin-top:12px" onclick="document.getElementById('toastSheet').classList.remove('open')">Close</button></div></div>
+<script>
+const DB_NAME='kids-choice-expense-tracker-v1';
+const IN_CATS=['Sales','Other income','Refund received','Opening balance'];
+const OUT_CATS=['Inventory purchase','Rent','Electricity','Store expenses','Transport','Packaging','Marketing','Other expense'];
+const ICONS={'Sales':'🛍️','Other income':'➕','Refund received':'↩️','Opening balance':'🏦','Inventory purchase':'📦','Rent':'🏪','Electricity':'💡','Store expenses':'🧾','Transport':'🚚','Packaging':'🛍️','Marketing':'📣','Other expense':'📌'};
+let db, entries=[], editId=null, entryType='in';
+const $=id=>document.getElementById(id);
+const money=n=>'₹'+Number(n||0).toLocaleString('en-IN',{maximumFractionDigits:2,minimumFractionDigits:0});
+const today=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};
+const thisMonth=()=>today().slice(0,7);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function openDB(){return new Promise((resolve,reject)=>{const req=indexedDB.open(DB_NAME,1);req.onupgradeneeded=()=>{const d=req.result;if(!d.objectStoreNames.contains('transactions')){const st=d.createObjectStore('transactions',{keyPath:'id'});st.createIndex('date','date',{unique:false})}};req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error)})}
+function readAll(){return new Promise((resolve,reject)=>{const req=db.transaction('transactions','readonly').objectStore('transactions').getAll();req.onsuccess=()=>resolve(req.result||[]);req.onerror=()=>reject(req.error)})}
+function writeOne(item){return new Promise((resolve,reject)=>{const tx=db.transaction('transactions','readwrite');tx.objectStore('transactions').put(item);tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error)})}
+function deleteOne(id){return new Promise((resolve,reject)=>{const tx=db.transaction('transactions','readwrite');tx.objectStore('transactions').delete(id);tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error)})}
+async function refresh(){entries=await readAll();entries.sort((a,b)=>b.date.localeCompare(a.date)||b.updatedAt-a.updatedAt);renderHome();renderTransactions();renderReports()}
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('active',s.id===id));document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.screen===id));$('monthLabel').textContent=new Date().toLocaleDateString('en-IN',{month:'long',year:'numeric'})+' · Shop Expense Tracker';if(id==='reports')renderReports();window.scrollTo(0,0)}
+function monthEntries(m=thisMonth()){return entries.filter(e=>e.date.startsWith(m))}
+function sum(list,pred=()=>true){return list.filter(pred).reduce((s,e)=>s+Number(e.amount),0)}
+function renderHome(){const list=monthEntries(),ins=list.filter(e=>e.type==='in'),outs=list.filter(e=>e.type==='out');const incoming=sum(ins),outgoing=sum(outs),net=incoming-outgoing;
+$('netFlow').textContent=(net<0?'−':'')+money(Math.abs(net));$('totalIn').textContent=money(incoming);$('totalOut').textContent=money(outgoing);
+const allIn=entries.filter(e=>e.type==='in'),allOut=entries.filter(e=>e.type==='out');
+const cash=sum(allIn,e=>e.payment==='Cash')-sum(allOut,e=>e.payment==='Cash');
+const upi=sum(allIn,e=>e.payment==='UPI')-sum(allOut,e=>e.payment==='UPI');
+$('cashBal').textContent=money(cash);$('upiBal').textContent=money(upi);$('salesTotal').textContent=money(sum(ins,e=>e.category==='Sales'));$('inventoryTotal').textContent=money(sum(outs,e=>e.category==='Inventory purchase'));
+$('cashSales').textContent=money(sum(ins,e=>e.category==='Sales'&&e.payment==='Cash'));$('upiSales').textContent=money(sum(ins,e=>e.category==='Sales'&&e.payment==='UPI'));
+const recent=[...entries].sort((a,b)=>(b.createdAt||0)-(a.createdAt||0)).slice(0,5);$('recentList').innerHTML=recent.length?recent.map(rowHTML).join(''):'<div class="empty">No transactions yet. Tap + to record your first sale or expense.</div>'}
+function rowHTML(e){const sign=e.type==='in'?'+':'−';return `<div class="row" role="button" tabindex="0" onclick="openEdit('${e.id}')" onkeydown="if(event.key==='Enter')openEdit('${e.id}')"><div class="emoji">${ICONS[e.category]||'🧾'}</div><div class="rowmain"><div class="rowtitle">${esc(e.description||e.category)}</div><div class="rowmeta">${esc(e.category)} · ${esc(e.payment)} · ${esc(e.date)}</div></div><div class="amount ${e.type==='in'?'positive':'negative'}">${sign}${money(e.amount)}</div></div>`}
+function renderTransactions(){if(!$('transactionList'))return;const q=$('search').value.trim().toLowerCase(),type=$('filterType').value,pay=$('filterPay').value,from=$('filterFrom').value,to=$('filterTo').value;
+const list=entries.filter(e=>(!q||[e.category,e.description,e.notes].join(' ').toLowerCase().includes(q))&&(!type||e.type===type)&&(!pay||e.payment===pay)&&(!from||e.date>=from)&&(!to||e.date<=to)).sort((a,b)=>b.date.localeCompare(a.date)||(b.createdAt||0)-(a.createdAt||0));
+$('resultCount').textContent=`${list.length} transaction${list.length===1?'':'s'} · ${money(sum(list))} total amount`; $('transactionList').innerHTML=list.length?list.map(rowHTML).join(''):'<div class="empty">No matching transactions.</div>'}
+function renderReports(){if(!$('reportMonth'))return;const m=$('reportMonth').value||thisMonth(),list=monthEntries(m),ins=list.filter(e=>e.type==='in'),outs=list.filter(e=>e.type==='out'),tin=sum(ins),tout=sum(outs);
+$('rIn').textContent=money(tin);$('rOut').textContent=money(tout);$('rNet').textContent=(tin<tout?'−':'')+money(Math.abs(tin-tout));$('rSales').textContent=money(sum(ins,e=>e.category==='Sales'));
+const cats={};outs.forEach(e=>cats[e.category]=(cats[e.category]||0)+Number(e.amount));const sorted=Object.entries(cats).sort((a,b)=>b[1]-a[1]);$('categoryReport').innerHTML=sorted.length?sorted.map(([c,v])=>`<div class="row"><div class="emoji">${ICONS[c]||'🧾'}</div><div class="rowmain"><div class="rowtitle">${esc(c)}</div><div class="rowmeta">${tout?Math.round(v/tout*100):0}% of money out</div></div><strong class="amount">${money(v)}</strong></div>`).join(''):'<div class="empty">No expenses for this month.</div>';
+const pays=['Cash','UPI','Bank transfer','Other'];$('paymentReport').innerHTML=pays.map(p=>{const a=sum(ins,e=>e.payment===p),b=sum(outs,e=>e.payment===p);return `<div class="row"><div class="emoji">${p==='Cash'?'💵':p==='UPI'?'📲':'🏦'}</div><div class="rowmain"><div class="rowtitle">${p}</div><div class="rowmeta">In ${money(a)} · Out ${money(b)}</div></div><strong class="amount">${money(a-b)}</strong></div>`}).join('')}
+function setType(t){entryType=t;$('inTab').classList.toggle('active',t==='in');$('outTab').classList.toggle('active',t==='out');const cats=t==='in'?IN_CATS:OUT_CATS;$('category').innerHTML=cats.map(c=>`<option>${esc(c)}</option>`).join('');if(t==='in'){$('category').value='Sales'}else $('category').value='Inventory purchase'}
+function openEntry(){editId=null;$('entryForm').reset();$('formTitle').textContent='Add transaction';$('saveButton').textContent='Save transaction';$('deleteButton').classList.add('hidden');$('date').value=today();$('payment').value='Cash';setType('in');$('entrySheet').classList.add('open');setTimeout(()=>$('amount').focus(),150)}
+function openEdit(id){const e=entries.find(x=>x.id===id);if(!e)return;editId=id;$('entryForm').reset();setType(e.type);$('formTitle').textContent='Edit transaction';$('amount').value=e.amount;$('category').value=e.category;$('payment').value=e.payment;$('date').value=e.date;$('description').value=e.description||'';$('notes').value=e.notes||'';$('saveButton').textContent='Save changes';$('deleteButton').classList.remove('hidden');$('entrySheet').classList.add('open')}
+function closeEntry(){$('entrySheet').classList.remove('open')}
+async function saveEntry(ev){ev.preventDefault();const amount=Number($('amount').value);if(!Number.isFinite(amount)||amount<=0){alert('Enter an amount greater than zero.');return}
+const prior=entries.find(e=>e.id===editId);const item={id:editId||crypto.randomUUID(),type:entryType,amount,category:$('category').value,payment:$('payment').value,date:$('date').value,description:$('description').value.trim(),notes:$('notes').value.trim(),createdAt:prior?.createdAt||Date.now(),updatedAt:Date.now()};
+if(!item.date){alert('Select a date.');return}await writeOne(item);closeEntry();await refresh()}
+async function deleteEntry(){if(!editId||!confirm('Delete this transaction permanently?'))return;await deleteOne(editId);closeEntry();await refresh()}
+function download(name,content,type){const blob=new Blob([content],{type}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+function exportJSON(){const backup={app:'Kids Choice Expense Tracker',schemaVersion:1,exportedAt:new Date().toISOString(),transactions:entries};download(`KidsChoice-Backup-${today()}.json`,JSON.stringify(backup,null,2),'application/json')}
+function csvCell(v){let s=String(v??'');if(/^[=+\-@]/.test(s))s="'"+s;return '"'+s.replace(/"/g,'""')+'"'}
+function exportCSV(){const rows=[['Date','Type','Amount','Category','Payment method','Description','Notes'],...entries.slice().sort((a,b)=>a.date.localeCompare(b.date)).map(e=>[e.date,e.type==='in'?'Money in':'Money out',e.amount,e.category,e.payment,e.description,e.notes])];download(`KidsChoice-Transactions-${today()}.csv`,'\ufeff'+rows.map(r=>r.map(csvCell).join(',')).join('\r\n'),'text/csv;charset=utf-8')}
+async function importJSON(ev){const file=ev.target.files?.[0];ev.target.value='';if(!file)return;try{const data=JSON.parse(await file.text());if(!data||!Array.isArray(data.transactions)||!data.transactions.every(validEntry)){alert('This does not look like a valid Kids Choice backup. No data was changed.');return}if(!confirm(`Restore ${data.transactions.length} transactions? This replaces all transactions currently on this device.`))return;const tx=db.transaction('transactions','readwrite'),store=tx.objectStore('transactions');store.clear();data.transactions.forEach(e=>store.put(e));tx.oncomplete=async()=>{await refresh();alert('Backup restored successfully.')};tx.onerror=()=>alert('Restore failed. Existing data may not have been replaced completely.')}catch{alert('Could not read this backup file. No data was changed.')}}
+function validEntry(e){return e&&typeof e.id==='string'&&['in','out'].includes(e.type)&&Number.isFinite(Number(e.amount))&&Number(e.amount)>0&&typeof e.date==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(e.date)&&typeof e.category==='string'&&typeof e.payment==='string'}
+async function clearAll(){if(!confirm('Erase every transaction from this device? Export a backup first if you may need these records.'))return;const tx=db.transaction('transactions','readwrite');tx.objectStore('transactions').clear();tx.oncomplete=refresh}
+(async()=>{try{if(!('indexedDB'in window))throw Error('IndexedDB is not supported by this browser.');db=await openDB();$('reportMonth').value=thisMonth();$('date').value=today();await refresh();if('serviceWorker'in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});if(location.protocol==='file:')console.info('For offline PWA installation, serve this folder over HTTPS or localhost. Local transaction storage can still work in supported browsers.')}catch(e){alert('App storage could not be initialized: '+e.message)}})();
+</script>
+</body></html>

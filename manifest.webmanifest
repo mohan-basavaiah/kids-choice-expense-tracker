@@ -1,0 +1,18 @@
+{
+  "name": "Kids Choice Expense Tracker",
+  "short_name": "Kids Choice",
+  "description": "Local-first shop income and expense tracker for Kids Choice.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#fff4f8",
+  "theme_color": "#fff4f8",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
